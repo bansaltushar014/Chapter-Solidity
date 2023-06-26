@@ -1,0 +1,18 @@
+{
+  "name": "dao_governance",
+  "version": "1.0.0",
+  "description": "DAO Governance ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.16.0"
+  },
+  "dependencies": {
+    "@openzeppelin/hardhat-upgrades": "^1.28.0"
+  }
+}
