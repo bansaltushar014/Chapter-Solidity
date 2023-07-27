@@ -31,3 +31,7 @@ In case of factory smart contract the call becomes like a "call" as shown below.
 
 
 In our example "Account" smart contract's msg.sender is the "AccountFactory" smartcontract's address. The amount that is being transferred while deployement of "Account" smartcontract is done from the user's wallet not from the "AccountFactory" smartcontract.
+
+
+https://github.com/bansaltushar014/Chapter-Solidity/assets/51528049/3d27b447-b585-4368-86f9-5f100bcb010f
+
