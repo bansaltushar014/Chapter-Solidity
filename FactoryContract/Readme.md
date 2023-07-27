@@ -27,6 +27,7 @@ Any advise for new features to add into it. Open source contibutions are accepte
 
 In case of factory smart contract the call becomes like a "call" as shown below.
 
-https://github.com/bansaltushar014/Chapter-Solidity/assets/51528049/5aaddd8a-81d7-403c-a19d-257767c6f59d
+![Screenshot from 2023-07-25 11-08-02](https://github.com/bansaltushar014/Chapter-Solidity/assets/51528049/a4593dfa-6dbc-40b4-9a77-b44df2427ca1)
+
 
 In our example "Account" smart contract's msg.sender is the "AccountFactory" smartcontract's address. The amount that is being transferred while deployement of "Account" smartcontract is done from the user's wallet not from the "AccountFactory" smartcontract.
