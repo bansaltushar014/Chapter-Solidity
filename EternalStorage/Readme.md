@@ -29,4 +29,4 @@ Any advise for new features to add into it. Open source contibutions are accepte
 
 ## More Info 
 
-To know more about the code, visit this page ``
+To know more about the code, visit this page `https://medium.com/@bansaltushar014/design-pattern-part-1-eternal-storage-722cd16bfc52`
