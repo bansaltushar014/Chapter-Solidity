@@ -28,7 +28,7 @@ Any advise for new features to add into it. Open source contibutions are accepte
 
 ## More Info 
 
-To know more about the code, visit this page ``
+To know more about the code, visit this page `https://medium.com/@bansaltushar014/proxy-part-1-simple-proxy-87d1ea9fe990`
 
 https://github.com/bansaltushar014/Chapter-Solidity/assets/51528049/89c33ae2-bc7a-41e0-ac45-62727d9925e1
 
