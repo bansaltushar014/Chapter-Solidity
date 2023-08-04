@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-contract MyImplementation {
+contract MyImplementationUpgrade {
     address public implmentation; 
     uint256 public value;
 
