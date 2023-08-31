@@ -28,7 +28,7 @@ Any advise for new features to add into it. Open source contibutions are accepte
 
 ## More Info 
 
-To know more about the code, visit this page ``
+To know more about the code, visit this page `https://medium.com/@bansaltushar014/simple-explanation-for-soul-bound-tokens-3b29a75c5479`
 
 
 
