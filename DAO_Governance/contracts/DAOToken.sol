@@ -42,26 +42,26 @@ contract DAOToken {
     mapping(address => uint32) public numCheckpoints;
 
     /// @notice The EIP-712 typehash for the contract's domain
-    bytes32 public constant DOMAIN_TYPEHASH =
+    bytes32 public immutable DOMAIN_TYPEHASH =
         keccak256(
             "EIP712Domain(string name,uint256 chainId,address verifyingContract)"
         );
 
     /// @notice The EIP-712 typehash for the delegation struct used by the contract
-    bytes32 public constant DELEGATION_TYPEHASH =
+    bytes32 public immutable DELEGATION_TYPEHASH =
         keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
 
     /// @notice A record of states for signing / validating signatures
     mapping(address => uint256) public nonces;
 
-    /// @notice An event thats emitted when an account changes its delegate
+    /// @notice An event that emitted when an account changes its delegate
     event DelegateChanged(
         address indexed delegator,
         address indexed fromDelegate,
         address indexed toDelegate
     );
 
-    /// @notice An event thats emitted when a delegate account's vote balance changes
+    /// @notice An event that emitted when a delegate account's vote balance changes
     event DelegateVotesChanged(
         address indexed delegate,
         uint256 previousBalance,
@@ -298,7 +298,7 @@ contract DAOToken {
             return 0;
         }
 
-        uint32 lower = 0;
+        uint32 lower;
         uint32 upper = nCheckpoints - 1;
         while (upper > lower) {
             uint32 center = upper - (upper - lower) / 2; // ceil, avoiding overflow
@@ -370,7 +370,7 @@ contract DAOToken {
         
         emit Transfer(src, dst, amount);
 
-        // If dst address has no delgatees, automatically set to self. Otherwise, transfer to dst's delegates
+        // If dst address has no delegates, automatically set to self. Otherwise, transfer to dst's delegates
         if (delegates[dst] == address(0)) {
             _delegate(dst, dst);
         } else {
