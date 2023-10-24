@@ -19,9 +19,9 @@ contract MySBT {
         return owner;
     }
 
-    function transfer(address to, uint256 tokenId) public {
+    function transfer(address to, uint256 tokenId) public view {
         require(to != address(0), "Invalid address");
-        require(_owners[tokenId] == msg.sender, "You don't own this token");
+        require(_owners[tokenId] == msg.sender, "You dont own this token");
 
         revert("Transfer not applicable");
     }
