@@ -64,6 +64,10 @@ contract Governor {
         uint256 id;
         // @notice Creator of the proposal
         address proposer;
+        // @notice Flag marking whether the proposal has been canceled
+        bool canceled;
+        // @notice Flag marking whether the proposal has been executed
+        bool executed;
         // @notice The timestamp that the proposal will be available for execution, set once the vote succeeds
         uint256 eta;
         // @notice the ordered list of target addresses for calls to be made
@@ -84,12 +88,8 @@ contract Governor {
         uint256 againstVotes;
         // @notice Current staked number of CLM8 signifying a for vote to burn or return after voting period
         uint256 rawForVotes;
-        // @notice Current staked number of CLM8 signifying a against vote to burn or return after voting period
+        // @notice Current staked number of CLM8 signifying an against vote to burn or return after voting period
         uint256 rawAgainstVotes;
-        // @notice Flag marking whether the proposal has been canceled
-        bool canceled;
-        // @notice Flag marking whether the proposal has been executed
-        bool executed;
         // @notes Description of the proposal
         string description;
         // @notice id for parent proposal (if a child multi-attribute proposal)
@@ -138,13 +138,13 @@ contract Governor {
     mapping(address => uint256) public latestProposalIds;
 
     /// @notice The EIP-712 typehash for the contract's domain
-    bytes32 public constant DOMAIN_TYPEHASH =
+    bytes32 public immutable DOMAIN_TYPEHASH =
         keccak256(
             "EIP712Domain(string name,uint256 chainId,address verifyingContract)"
         );
 
     /// @notice The EIP-712 typehash for the ballot struct used by the contract
-    bytes32 public constant BALLOT_TYPEHASH =
+    bytes32 public immutable BALLOT_TYPEHASH =
         keccak256("Ballot(uint256 proposalId,bool support)");
 
     /// @notice An event emitted when a new proposal is created
@@ -206,9 +206,13 @@ contract Governor {
     // ?? 
     function _setChildProposalIds(uint256[] memory ids) internal {
         Proposal storage p = proposals[ids[0]];
-        for (uint256 i = 1; i < ids.length; i++) {
+        for (uint256 i = 1; i < ids.length;) {
             // skip 1 because 0 is the parent proposal
             p.childProposalIds.push(ids[i]);
+
+            unchecked {
+                ++i;
+            }
         }
     }
 
@@ -231,7 +235,7 @@ contract Governor {
         // iterate through targets.length and call propose() for each proposal
         // 0 is parent, 1..n are children
         uint256[] memory ids = new uint256[](targets.length);
-        for (uint256 i = 0; i < targets.length; i++) {
+        for (uint256 i; i < targets.length;) {
             // wrap arguments in arrays
             address[] memory target = new address[](1);
             uint256[] memory value = new uint256[](1);
@@ -257,6 +261,10 @@ contract Governor {
             if (i > 0) {
                 Proposal storage p = proposals[id];
                 p.parentProposalId = ids[0];
+            }
+
+            unchecked {
+                ++i;
             }
         }
 
@@ -292,7 +300,7 @@ contract Governor {
             "Governor::propose: too many actions"
         );
 
-        // lock proposal threshold (the refund function handles the logic for eligible amount to withdraw)
+        // lock proposal threshold (the refund function handles the logic for an eligible amount to withdraw)
         require(
             dclm8.balanceOf(msg.sender) >= proposalThreshold(),
             "Governor::propose: not enough balance to lock dCLM8 with proposal"
@@ -384,7 +392,7 @@ contract Governor {
         );
 
         uint256 eta = add256(block.timestamp, timelock.delay());
-        for (uint256 i = 0; i < proposal.targets.length; i++) {
+        for (uint256 i; i < proposal.targets.length;) {
             _queueOrRevert(
                 proposal.targets[i],
                 proposal.values[i],
@@ -392,6 +400,10 @@ contract Governor {
                 proposal.calldatas[i],
                 eta
             );
+
+            unchecked {
+                ++i;
+            }
         }
         proposal.eta = eta;
         emit ProposalQueued(proposalId, eta);
@@ -420,7 +432,7 @@ contract Governor {
         );
         Proposal storage proposal = proposals[proposalId];
         proposal.executed = true;
-        for (uint256 i = 0; i < proposal.targets.length; i++) {
+        for (uint256 i; i < proposal.targets.length;) {
             timelock.executeTransaction{value: proposal.values[i]}(
                 proposal.targets[i],
                 proposal.values[i],
@@ -428,6 +440,10 @@ contract Governor {
                 proposal.calldatas[i],
                 proposal.eta
             );
+
+            unchecked {
+                ++i;
+            }
         }
         emit ProposalExecuted(proposalId);
     }
@@ -456,7 +472,7 @@ contract Governor {
         );
 
         proposal.canceled = true;
-        for (uint256 i = 0; i < proposal.targets.length; i++) {
+        for (uint256 i; i < proposal.targets.length;) {
             timelock.cancelTransaction(
                 proposal.targets[i],
                 proposal.values[i],
@@ -464,6 +480,10 @@ contract Governor {
                 proposal.calldatas[i],
                 proposal.eta
             );
+
+            unchecked {
+                ++i;
+            }
         }
 
         emit ProposalCanceled(proposalId);
@@ -507,8 +527,8 @@ contract Governor {
         Proposal storage proposal = proposals[proposalId];
 
         // check if parent/child proposal
-        bool isChildProposal = false;
-        bool isParentProposal = false;
+        bool isChildProposal;
+        bool isParentProposal;
         if (proposal.parentProposalId > 0) {
             isChildProposal = true;
         } else if (proposal.childProposalIds.length > 0) {
@@ -522,7 +542,7 @@ contract Governor {
         uint256 forVotes = proposal.forVotes;
         uint256 againstVotes = proposal.againstVotes;
         if (isParentProposal) {
-            for (uint256 i = 0; i < proposal.childProposalIds.length; i++) {
+            for (uint256 i; i < proposal.childProposalIds.length;) {
                 Proposal storage child = proposals[
                     proposal.childProposalIds[i]
                 ];
@@ -533,6 +553,10 @@ contract Governor {
                     child.forVotes <= child.againstVotes
                 ) {
                     return ProposalState.Defeated;
+                }
+
+                unchecked {
+                    ++i;
                 }
             }
         }
@@ -699,13 +723,17 @@ contract Governor {
         uint256 numChildProposals = proposal.childProposalIds.length;
         if (numChildProposals > 0) {
             uint96 splitVotes = uint96(div256(votes, numChildProposals)); // TODO: check math
-            for (uint256 i = 0; i < numChildProposals; i++) {
+            for (uint256 i; i < numChildProposals;) {
                 _castVoteInternal(
                     msg.sender,
                     proposal.childProposalIds[i],
                     support,
                     splitVotes
                 );
+
+                unchecked {
+                    ++i;
+                }
             }
             return;
         }
@@ -737,8 +765,11 @@ contract Governor {
         if (proposal.childProposalIds.length > 0) {
             uint256 numChildProposals = proposal.childProposalIds.length;
             if (numChildProposals > 0) {
-                for (uint256 i = 0; i < numChildProposals; i++) {
+                for (uint256 i; i < numChildProposals;) {
                     _refund(proposal.childProposalIds[i], true);
+                    unchecked {
+                        ++i;
+                    }
                 }
                 return;
             }
@@ -789,7 +820,7 @@ contract Governor {
 
         uint256 amount;
         // on active proposal this is the amount of votes to change
-        uint256 votesAmount = 0;
+        uint256 votesAmount;
         bool isProposer = (msg.sender == proposal.proposer);
         bool isActive = pState == ProposalState.Active;
 
@@ -1000,12 +1031,12 @@ contract Governor {
         return c;
     }
 
-    function sqrt(uint256 x) internal pure returns (uint256 y) {
-        uint256 z = (x + 1) / 2;
-        y = x;
+    function sqrt(uint256 num) internal pure returns (uint256 y) {
+        uint256 z = (num + 1) / 2;
+        y = num;
         while (z < y) {
             y = z;
-            z = (x / z + z) / 2;
+            z = (num / z + z) / 2;
         }
     }
 
