@@ -16,8 +16,12 @@ contract MyNFT {
 
     function balanceOfBatch(address[] memory owners, uint256[] memory ids) public view returns (uint256[] memory) {
         uint256[] memory balances = new uint256[](owners.length);
-        for (uint256 i = 0; i < owners.length; i++) {
+        for (uint256 i; i < owners.length;) {
             balances[i] = _balances[ids[i]][owners[i]];
+
+            unchecked {
+                ++i;
+            }
         }
         return balances;
     }
@@ -33,7 +37,7 @@ contract MyNFT {
          return _operatorApprovals[owner][operator];
     }
 
-    function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory data) public {
+    function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory) public {
         require(to != address(0), "Invalid address");
 
         require(
@@ -49,7 +53,7 @@ contract MyNFT {
         emit TransferSingle(msg.sender, from, to, id, amount);
     }
 
-    function safeBatchTransferFrom(address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data) public {
+    function safeBatchTransferFrom(address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory) public {
         require(ids.length == amounts.length, "Array length mismatch");
         require(to != address(0), "Invalid address");
 
@@ -58,13 +62,17 @@ contract MyNFT {
             "Transfer not authorized"
         );
 
-        for (uint256 i = 0; i < ids.length; i++) {
+        for (uint256 i; i < ids.length;) {
             uint256 id = ids[i];
             uint256 amount = amounts[i];
             require(balanceOf(from, id) >= amount, "Insufficient balance");
 
             _balances[id][from] -= amount;
             _balances[id][to] += amount;
+
+            unchecked {
+                ++i;
+            }
         }
 
         emit TransferBatch(msg.sender, from, to, ids, amounts);
