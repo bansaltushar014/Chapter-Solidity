@@ -1,7 +1,7 @@
 # Project Title
 Simple Overview of ERC-4337
 ## Description 
-This contract implements the basic functionality of an ERC-4337 account abstraction contract. It allows users to deposit and withdraw ETH, and it exposes a getBalance() function that allows users to check their balance.
+This code implements the basic functionality of an ERC-4337 contract. It allows users to submit transactions to the Ethereum network and to get the status of transactions.
 # How to Run this Contract 
 To use this contract, you would first need to deploy it to the Ethereum blockchain.
 
@@ -11,7 +11,7 @@ https://remix.ethereum.org/
 ```
 then deploy it.
 
-Once the contract is deployed, you can interact with it using the **deposit()**, **withdraw()**, and **getBalance()** functions.
+Once the contract is deployed, you can submit transactions to the Ethereum network by calling the **submitTransaction()** function. You can get the status of a transaction by calling the **getTransactionStatus()** function.
 ## More info
 To know more about ERC-4337
 
