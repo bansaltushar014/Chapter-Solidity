@@ -6,7 +6,7 @@
     </a>
   </p>
   <p>
-    Help Solidity developer to learn fast via providing simple code and examples. This repo containing the most popular smart contracts collections.
+    Help Solidity developers to learn fast via providing simple code and examples. This repo contains the most popular smart contracts collections.
   </p>
   <p>
      <a href="https://github.com/bansaltushar014/Chapter-Solidity/issues"><img src="https://img.shields.io/github/issues/bansaltushar014/Chapter-Solidity?style=for-the-badge&logo=appveyor" /></a>&nbsp;&nbsp;
@@ -28,19 +28,20 @@
     ├── Call                    # Contains an example of call in Solidity
     ├── DAO_Governance          # Contains an example of creation of DAO
     ├── DelegateCall            # Contains an example to create a delegate call from a smart contract to another
-    ├── ERC 721                 # Contains an example to create an NFT
-    ├── ERC 1155                # Contains an example to create a ERC 1155 without Openzepplin
+    ├── ERC 1155                # Contains an example to create a ERC 1155 without Openzeppelin
+    ├── ERC 173                 # Contains an example to use ERC 173
     ├── ERC 3525                # Contains an example to use ERC 3525
+    ├── ERC 721                 # Contains an example to create an NFT
     ├── EternalStorage          # Contains an example to use Storage
     ├── FactoryContract         # Contains an example to use Factory Contract
     ├── Libraries               # Contains an example to use the Libraries
     ├── MultiCall               # Contains an example to use MultiCall
-    ├── Proxies                 # Contains Various Proxy Patterns via OpenZepplin and non OpenZepplin
+    ├── Proxies                 # Contains Various Proxy Patterns via OpenZeppelin and non OpenZeppelin
     ├── SBT                     # Contains an example to use Soul Bound Token
     ├── StaticCall              # Contains an example to use Static Call in Solidity
     ├── Timelock                # Contains an example to use Timelock
     ├── VerifySignature         # Contains an example to use Verify Signature
-    ├── CONTRIBUTING.md         # Rules and Guide to Contiribute
+    ├── CONTRIBUTING.md         # Rules and Guide to Contribute
     └── README.md
 
 ## Community
@@ -53,5 +54,5 @@ If you need help or just want to discuss about the library join the community on
 
 - [x] Take a look at [guide on contributing](https://github.com/bansaltushar014/chapter-Solidity/blob/master/CONTRIBUTING.md) (Necessary)
 - [x] Create an issue for making any change to code. when issue will be approve you can make a change.
-- [x] Pull latest change from upstream branch before starting the changing code.
+- [x] Pull latest changes from upstream branch before starting the changing code.
 - [x] Add your file in proper folder(lowercase) with README.md in it. Add requirements.txt if needed.
