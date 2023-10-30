@@ -445,18 +445,26 @@ contract ERC3525 is Context, IERC3525Metadata, IERC721Enumerable {
     function _clearApprovedValues(uint256 tokenId_) internal virtual {
         TokenData storage tokenData = _allTokens[_allTokensIndex[tokenId_]];
         uint256 length = tokenData.valueApprovals.length;
-        for (uint256 i = 0; i < length; i++) {
+        for (uint256 i; i < length;) {
             address approval = tokenData.valueApprovals[i];
             delete _approvedValues[tokenId_][approval];
+
+            unchecked {
+                ++i;
+            }
         }
         delete tokenData.valueApprovals;
     }
 
     function _existApproveValue(address to_, uint256 tokenId_) internal view virtual returns (bool) {
         uint256 length = _allTokens[_allTokensIndex[tokenId_]].valueApprovals.length;
-        for (uint256 i = 0; i < length; i++) {
+        for (uint256 i; i < length;) {
             if (_allTokens[_allTokensIndex[tokenId_]].valueApprovals[i] == to_) {
                 return true;
+
+                unchecked {
+                    ++i;
+                }
             }
         }
         return false;
